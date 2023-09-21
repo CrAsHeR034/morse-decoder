@@ -39,17 +39,27 @@ const MORSE_TABLE = {
 
 function decode(expr) {
 
-  const morseGroups = expr.match(/.{10}/g);
-
-  const decodedString = morseGroups
-    .map((morseGroup) => {
-
-      const morseCode = morseGroup.replace(/10/g, ".").replace(/11/g, "-");
-      return MORSE_TABLE[morseCode];
-    })
-    .join("");
-
-  return decodedString;
+    const chunkSize = 10; // 10 bits for each Morse code symbol
+    const chunks = [];
+    
+    for (let i = 0; i < expr.length; i += chunkSize) {
+        chunks.push(expr.slice(i, i + chunkSize));
+    }
+    
+    const morseSymbols = chunks.map(chunk => {
+        if (chunk === '**********') {
+            return ' '; // Space
+        }
+        
+        // Convert binary chunk to Morse code
+        const morseCode = chunk
+            .replace(/10/g, '.')
+            .replace(/11/g, '-');
+        
+        return MORSE_TABLE[morseCode];
+    });
+    
+    return morseSymbols.join('');
 }
 
 module.exports = {
