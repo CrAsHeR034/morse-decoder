@@ -38,28 +38,20 @@ const MORSE_TABLE = {
 };
 
 function decode(expr) {
+     var words = expr.split("  ");
+  var letters = words.map((w) => w.split(" "));
+  var decoded = [];
 
-    const chunkSize = 10; // 10 bits for each Morse code symbol
-    const chunks = [];
-    
-    for (let i = 0; i < expr.length; i += chunkSize) {
-        chunks.push(expr.slice(i, i + chunkSize));
+  for (var i = 0; i < letters.length; i++) {
+    decoded[i] = [];
+    for (var x = 0; x < letters[i].length; x++) {
+      if (MORSE_TABLE[letters[i][x]]) {
+        decoded[i].push(MORSE_TABLE[letters[i][x]]);
+      }
     }
-    
-    const morseSymbols = chunks.map(chunk => {
-        if (chunk === '**********') {
-            return ' '; // Space
-        }
-        
-        // Convert binary chunk to Morse code
-        const morseCode = chunk
-            .replace(/10/g, '.')
-            .replace(/11/g, '-');
-        
-        return MORSE_TABLE[morseCode];
-    });
-    
-    return morseSymbols.join('');
+  }
+
+  return decoded.map((arr) => arr.join("")).join(" ");
 }
 
 module.exports = {
